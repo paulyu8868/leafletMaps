@@ -1,0 +1,130 @@
+<template>
+  <lightning-card title="세일즈포스 지도" icon-name="utility:location">
+      <div class="slds-p-horizontal_medium">
+          <!-- 마커 필터 버튼 -->
+          <div class="slds-m-bottom_medium">
+              <div class="slds-form-element">
+                  <label class="slds-form-element__label">표시할 마커 선택</label>
+                  <div class="marker-filter-buttons">
+                      <button 
+                          class={headquartersButtonClass}
+                          onclick={handleFilterToggle}
+                          data-marker-type="headquarters"
+                      >
+                          <div class="filter-button-content">
+                              <div class="filter-marker headquarters-mini"></div>
+                              <span>본사</span>
+                          </div>
+                      </button>
+                      
+                      <button 
+                          class={eventButtonClass}
+                          onclick={handleFilterToggle}
+                          data-marker-type="event"
+                      >
+                          <div class="filter-button-content">
+                              <div class="filter-marker event-mini">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                      <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"></path>
+                                  </svg>
+                              </div>
+                              <span>이벤트</span>
+                          </div>
+                      </button>
+                      
+                      <button 
+                          class={accountButtonClass}
+                          onclick={handleFilterToggle}
+                          data-marker-type="account"
+                      >
+                          <div class="filter-button-content">
+                              <div class="filter-marker account-mini">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                  </svg>
+                              </div>
+                              <span>어카운트</span>
+                          </div>
+                      </button>
+                      
+                      <button 
+                          class={leadButtonClass}
+                          onclick={handleFilterToggle}
+                          data-marker-type="lead"
+                      >
+                          <div class="filter-button-content">
+                              <div class="filter-marker lead-mini">
+                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+                                  </svg>
+                              </div>
+                              <span>리드</span>
+                          </div>
+                      </button>
+                      
+                      <button 
+                          class={campaignButtonClass}
+                          onclick={handleFilterToggle}
+                          data-marker-type="campaign"
+                      >
+                          <div class="filter-button-content">
+                              <div class="filter-marker campaign-mini">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                                  </svg>
+                              </div>
+                              <span>캠페인</span>
+                          </div>
+                      </button>
+                      
+                      <button 
+                          class={locationButtonClass}
+                          onclick={handleFilterToggle}
+                          data-marker-type="location"
+                      >
+                          <div class="filter-button-content">
+                              <div class="filter-marker location-mini">
+                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path>
+                                  </svg>
+                              </div>
+                              <span>현재위치</span>
+                          </div>
+                      </button>
+                  </div>
+              </div>
+          </div>
+
+          <!-- 로딩 스피너 -->
+          <template if:true={isLoading}>
+              <div class="slds-text-align_center slds-m-bottom_medium">
+                  <lightning-spinner alternative-text="로딩 중..." size="small"></lightning-spinner>
+              </div>
+          </template>
+
+          <!-- 오류 메시지 -->
+          <template if:true={errorMessage}>
+              <div class="slds-m-bottom_medium">
+                  <div class="slds-notify slds-notify_alert slds-alert_error">
+                      <span class="slds-assistive-text">오류</span>
+                      <h2>{errorMessage}</h2>
+                  </div>
+              </div>
+          </template>
+
+          <!-- 지도 영역 -->
+          <div class="map-container">
+              <div class="map-div" lwc:dom="manual"></div>
+          </div>
+
+          <!-- 현재 마커 수 표시 -->
+          <template if:true={isMapInitialized}>
+              <div class="slds-m-top_medium">
+                  <div class="slds-box slds-box_small">
+                      <p><strong>표시된 마커:</strong> {visibleMarkersCount}개</p>
+                  </div>
+              </div>
+          </template>
+      </div>
+  </lightning-card>
+</template>
